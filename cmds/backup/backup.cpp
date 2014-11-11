@@ -25,7 +25,8 @@ using namespace android;
 
 #include <unistd.h>
 
-static int usage(int /* argc */, const char** argv)
+int
+usage(int argc, const char** argv)
 {
     const char* p = argv[0];
 
@@ -43,13 +44,15 @@ static int usage(int /* argc */, const char** argv)
     return 1;
 }
 
-static int perform_full_backup()
+int
+perform_full_backup()
 {
     printf("this would have written all of your data to stdout\n");
     return 0;
 }
 
-static int perform_list(const char* filename)
+int
+perform_list(const char* filename)
 {
     int err;
     int fd;
@@ -75,7 +78,7 @@ static int perform_list(const char* filename)
                 size_t dataSize;
                 err = reader.ReadEntityHeader(&key, &dataSize);
                 if (err == 0) {
-                    printf("   entity: %s (%zu bytes)\n", key.string(), dataSize);
+                    printf("   entity: %s (%d bytes)\n", key.string(), dataSize);
                 } else {
                     printf("   Error reading entity header\n");
                 }
@@ -92,13 +95,14 @@ static int perform_list(const char* filename)
     return 0;
 }
 
-static int perform_print(const char* entityname, const char* filename)
+int perform_print(const char* entityname, const char* filename)
 {
     printf("perform_print(%s, %s);", entityname, filename);
     return 0;
 }
 
-int main(int argc, const char** argv)
+int
+main(int argc, const char** argv)
 {
     if (argc <= 1) {
         return perform_full_backup();

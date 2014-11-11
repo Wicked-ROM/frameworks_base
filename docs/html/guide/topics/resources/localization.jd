@@ -481,6 +481,3 @@ the new locale. </p>
 	<code>res/layout-land/main.xml</code> but does not contain a file called 
 	<code>res/layout-port/main.xml</code>, then set the emulator or device to 
 	portrait orientation and see if the application will run. 
-
-
-

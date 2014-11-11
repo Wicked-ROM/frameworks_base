@@ -95,6 +95,8 @@ extern int register_android_media_AudioTrack(JNIEnv *env);
 extern int register_android_media_JetPlayer(JNIEnv *env);
 extern int register_android_media_ToneGenerator(JNIEnv *env);
 
+extern int register_android_util_FloatMath(JNIEnv* env);
+
 namespace android {
 
 /*
@@ -854,7 +856,7 @@ int AndroidRuntime::startVm(JavaVM** pJavaVM, JNIEnv** pEnv)
         parseRuntimeOption("dalvik.vm.profiler.type", profileType, "-Xprofile-type:");
 
         // Depth of bounded stack data
-        parseRuntimeOption("dalvik.vm.profile.stack-depth",
+        parseRuntimeOption("dalvik.vm.profile.max-stack-depth",
                            profileMaxStackDepth,
                            "-Xprofile-max-stack-depth:");
 
@@ -1226,6 +1228,7 @@ static const RegJNIRec gRegJNI[] = {
     REG_JNI(register_android_os_SystemClock),
     REG_JNI(register_android_util_EventLog),
     REG_JNI(register_android_util_Log),
+    REG_JNI(register_android_util_FloatMath),
     REG_JNI(register_android_content_AssetManager),
     REG_JNI(register_android_content_StringBlock),
     REG_JNI(register_android_content_XmlBlock),

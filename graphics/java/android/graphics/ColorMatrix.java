@@ -16,6 +16,8 @@
 
 package android.graphics;
 
+import android.util.FloatMath;
+
 import java.util.Arrays;
 
 /**
@@ -121,9 +123,9 @@ public class ColorMatrix {
      */
     public void setRotate(int axis, float degrees) {
         reset();
-        double radians = degrees * Math.PI / 180d;
-        float cosine = (float) Math.cos(radians);
-        float sine = (float) Math.sin(radians);
+        float radians = degrees * (float)Math.PI / 180;
+        float cosine = FloatMath.cos(radians);
+        float sine = FloatMath.sin(radians);
         switch (axis) {
         // Rotation around the red color
         case 0:

@@ -16,19 +16,15 @@
 #include "WorkQueue.h"
 #include "XMLNode.h"
 
-// STATUST: mingw does seem to redefine UNKNOWN_ERROR from our enum value, so a cast is necessary.
 #if HAVE_PRINTF_ZD
 #  define ZD "%zd"
 #  define ZD_TYPE ssize_t
-#  define STATUST(x) x
 #else
 #  define ZD "%ld"
 #  define ZD_TYPE long
-#  define STATUST(x) (status_t)x
 #endif
 
-// Set to true for noisy debug output.
-static const bool kIsDebug = false;
+#define NOISY(x) // x
 
 // Number of threads to use for preprocessing images.
 static const size_t MAX_THREADS = 4;
@@ -129,17 +125,15 @@ public:
             String8 leaf(group->getLeaf());
             mLeafName = String8(leaf);
             mParams = file->getGroupEntry().toParams();
-            if (kIsDebug) {
-                printf("Dir %s: mcc=%d mnc=%d lang=%c%c cnt=%c%c orient=%d ui=%d density=%d touch=%d key=%d inp=%d nav=%d\n",
-                        group->getPath().string(), mParams.mcc, mParams.mnc,
-                        mParams.language[0] ? mParams.language[0] : '-',
-                        mParams.language[1] ? mParams.language[1] : '-',
-                        mParams.country[0] ? mParams.country[0] : '-',
-                        mParams.country[1] ? mParams.country[1] : '-',
-                        mParams.orientation, mParams.uiMode,
-                        mParams.density, mParams.touchscreen, mParams.keyboard,
-                        mParams.inputFlags, mParams.navigation);
-            }
+            NOISY(printf("Dir %s: mcc=%d mnc=%d lang=%c%c cnt=%c%c orient=%d ui=%d density=%d touch=%d key=%d inp=%d nav=%d\n",
+                   group->getPath().string(), mParams.mcc, mParams.mnc,
+                   mParams.language[0] ? mParams.language[0] : '-',
+                   mParams.language[1] ? mParams.language[1] : '-',
+                   mParams.country[0] ? mParams.country[0] : '-',
+                   mParams.country[1] ? mParams.country[1] : '-',
+                   mParams.orientation, mParams.uiMode,
+                   mParams.density, mParams.touchscreen, mParams.keyboard,
+                   mParams.inputFlags, mParams.navigation));
             mPath = "res";
             mPath.appendPath(file->getGroupEntry().toDirName(mResType));
             mPath.appendPath(leaf);
@@ -150,9 +144,7 @@ public:
                 return UNKNOWN_ERROR;
             }
 
-            if (kIsDebug) {
-                printf("file name=%s\n", mBaseName.string());
-            }
+            NOISY(printf("file name=%s\n", mBaseName.string()));
 
             return NO_ERROR;
         }
@@ -269,7 +261,7 @@ static status_t parsePackage(Bundle* bundle, const sp<AaptAssets>& assets,
                 ssize_t minSdkIndex = block.indexOfAttribute(RESOURCES_ANDROID_NAMESPACE,
                                                              "minSdkVersion");
                 if (minSdkIndex >= 0) {
-                    const char16_t* minSdk16 = block.getAttributeStringValue(minSdkIndex, &len);
+                    const uint16_t* minSdk16 = block.getAttributeStringValue(minSdkIndex, &len);
                     const char* minSdk8 = strdup(String8(minSdk16).string());
                     bundle->setManifestMinSdkVersion(minSdk8);
                 }
@@ -325,7 +317,7 @@ static status_t makeFileResources(Bundle* bundle, const sp<AaptAssets>& assets,
         assets->addResource(it.getLeafName(), resPath, it.getFile(), type8);
     }
 
-    return hasErrors ? STATUST(UNKNOWN_ERROR) : NO_ERROR;
+    return hasErrors ? UNKNOWN_ERROR : NO_ERROR;
 }
 
 class PreProcessImageWorkUnit : public WorkQueue::WorkUnit {
@@ -375,7 +367,7 @@ static status_t preProcessImages(const Bundle* bundle, const sp<AaptAssets>& ass
             hasErrors = true;
         }
     }
-    return (hasErrors || (res < NO_ERROR)) ? STATUST(UNKNOWN_ERROR) : NO_ERROR;
+    return (hasErrors || (res < NO_ERROR)) ? UNKNOWN_ERROR : NO_ERROR;
 }
 
 static void collect_files(const sp<AaptDir>& dir,
@@ -400,35 +392,27 @@ static void collect_files(const sp<AaptDir>& dir,
 
         if (index < 0) {
             sp<ResourceTypeSet> set = new ResourceTypeSet();
-            if (kIsDebug) {
-                printf("Creating new resource type set for leaf %s with group %s (%p)\n",
-                        leafName.string(), group->getPath().string(), group.get());
-            }
+            NOISY(printf("Creating new resource type set for leaf %s with group %s (%p)\n",
+                    leafName.string(), group->getPath().string(), group.get()));
             set->add(leafName, group);
             resources->add(resType, set);
         } else {
             sp<ResourceTypeSet> set = resources->valueAt(index);
             index = set->indexOfKey(leafName);
             if (index < 0) {
-                if (kIsDebug) {
-                    printf("Adding to resource type set for leaf %s group %s (%p)\n",
-                            leafName.string(), group->getPath().string(), group.get());
-                }
+                NOISY(printf("Adding to resource type set for leaf %s group %s (%p)\n",
+                        leafName.string(), group->getPath().string(), group.get()));
                 set->add(leafName, group);
             } else {
                 sp<AaptGroup> existingGroup = set->valueAt(index);
-                if (kIsDebug) {
-                    printf("Extending to resource type set for leaf %s group %s (%p)\n",
-                            leafName.string(), group->getPath().string(), group.get());
-                }
+                NOISY(printf("Extending to resource type set for leaf %s group %s (%p)\n",
+                        leafName.string(), group->getPath().string(), group.get()));
                 for (size_t j=0; j<files.size(); j++) {
-                    if (kIsDebug) {
-                        printf("Adding file %s in group %s resType %s\n",
-                                files.valueAt(j)->getSourceFile().string(),
-                                files.keyAt(j).toDirName(String8()).string(),
-                                resType.string());
-                    }
-                    existingGroup->addFile(files.valueAt(j));
+                    NOISY(printf("Adding file %s in group %s resType %s\n",
+                        files.valueAt(j)->getSourceFile().string(),
+                        files.keyAt(j).toDirName(String8()).string(),
+                        resType.string()));
+                    status_t err = existingGroup->addFile(files.valueAt(j));
                 }
             }
         }
@@ -443,16 +427,12 @@ static void collect_files(const sp<AaptAssets>& ass,
 
     for (int i=0; i<N; i++) {
         sp<AaptDir> d = dirs.itemAt(i);
-        if (kIsDebug) {
-            printf("Collecting dir #%d %p: %s, leaf %s\n", i, d.get(), d->getPath().string(),
-                    d->getLeaf().string());
-        }
+        NOISY(printf("Collecting dir #%d %p: %s, leaf %s\n", i, d.get(), d->getPath().string(),
+                d->getLeaf().string()));
         collect_files(d, resources);
 
         // don't try to include the res dir
-        if (kIsDebug) {
-            printf("Removing dir leaf %s\n", d->getLeaf().string());
-        }
+        NOISY(printf("Removing dir leaf %s\n", d->getLeaf().string()));
         ass->removeDir(d->getLeaf());
     }
 }
@@ -470,7 +450,7 @@ static int validateAttr(const String8& path, const ResTable& table,
     size_t len;
 
     ssize_t index = parser.indexOfAttribute(ns, attr);
-    const char16_t* str;
+    const uint16_t* str;
     Res_value value;
     if (index >= 0 && parser.getAttributeValue(index, &value) >= 0) {
         const ResStringPool* pool = &parser.getStrings();
@@ -547,7 +527,7 @@ static int validateAttr(const String8& path, const ResTable& table,
                     String8(parser.getElementName(&len)).string(), attr);
             return ATTR_LEADING_SPACES;
         }
-        if (len != 0 && str[len-1] == ' ') {
+        if (str[len-1] == ' ') {
             fprintf(stderr, "%s:%d: Tag <%s> attribute %s can not end with a space.\n",
                     path.string(), parser.getLineNumber(),
                     String8(parser.getElementName(&len)).string(), attr);
@@ -710,11 +690,9 @@ bool addTagAttribute(const sp<XMLNode>& node, const char* ns8,
     XMLNode::attribute_entry* existingEntry = node->editAttribute(ns, attr);
     if (existingEntry != NULL) {
         if (replaceExisting) {
-            if (kIsDebug) {
-                printf("Info: AndroidManifest.xml already defines %s (in %s);"
-                        " overwriting existing value from manifest.\n",
-                        String8(attr).string(), String8(ns).string());
-            }
+            NOISY(printf("Info: AndroidManifest.xml already defines %s (in %s);"
+                         " overwriting existing value from manifest.\n",
+                         String8(attr).string(), String8(ns).string()));
             existingEntry->string = String16(value);
             return true;
         }
@@ -773,9 +751,7 @@ static void fullyQualifyClassName(const String8& package, sp<XMLNode> node,
         } else {
             className += name;
         }
-        if (kIsDebug) {
-            printf("Qualifying class '%s' to '%s'", name.string(), className.string());
-        }
+        NOISY(printf("Qualifying class '%s' to '%s'", name.string(), className.string()));
         attr->string.setTo(String16(className));
     }
 }
@@ -879,10 +855,7 @@ status_t massageManifest(Bundle* bundle, sp<XMLNode> root)
         }
         String8 origPackage(attr->string);
         attr->string.setTo(String16(manifestPackageNameOverride));
-        if (kIsDebug) {
-            printf("Overriding package '%s' to be '%s'\n", origPackage.string(),
-                    manifestPackageNameOverride);
-        }
+        NOISY(printf("Overriding package '%s' to be '%s'\n", origPackage.string(), manifestPackageNameOverride));
 
         // Make class names fully qualified
         sp<XMLNode> application = root->getChildElement(String16(), String16("application"));
@@ -1139,9 +1112,8 @@ status_t buildResources(Bundle* bundle, const sp<AaptAssets>& assets, sp<ApkBuil
         return err;
     }
 
-    if (kIsDebug) {
-        printf("Creating resources for package %s\n", assets->getPackage().string());
-    }
+    NOISY(printf("Creating resources for package %s\n",
+                 assets->getPackage().string()));
 
     ResourceTable::PackageType packageType = ResourceTable::App;
     if (bundle->getBuildSharedLibrary()) {
@@ -1158,9 +1130,7 @@ status_t buildResources(Bundle* bundle, const sp<AaptAssets>& assets, sp<ApkBuil
         return err;
     }
 
-    if (kIsDebug) {
-        printf("Found %d included resource packages\n", (int)table.size());
-    }
+    NOISY(printf("Found %d included resource packages\n", (int)table.size()));
 
     // Standard flags for compiled XML and optional UTF-8 encoding
     int xmlFlags = XML_COMPILE_STANDARD_RESOURCE;
@@ -1740,7 +1710,7 @@ status_t buildResources(Bundle* bundle, const sp<AaptAssets>& assets, sp<ApkBuil
                 }
                 size_t len;
                 ssize_t index = block.indexOfAttribute(RESOURCES_ANDROID_NAMESPACE, "name");
-                const char16_t* id = block.getAttributeStringValue(index, &len);
+                const uint16_t* id = block.getAttributeStringValue(index, &len);
                 if (id == NULL) {
                     fprintf(stderr, "%s:%d: missing name attribute in element <%s>.\n", 
                             manifestPath.string(), block.getLineNumber(),
@@ -1783,7 +1753,7 @@ status_t buildResources(Bundle* bundle, const sp<AaptAssets>& assets, sp<ApkBuil
                   hasErrors = true;
                 }
                 syms->addStringSymbol(String8(e), idStr, srcPos);
-                const char16_t* cmt = block.getComment(&len);
+                const uint16_t* cmt = block.getComment(&len);
                 if (cmt != NULL && *cmt != 0) {
                     //printf("Comment of %s: %s\n", String8(e).string(),
                     //        String8(cmt).string());
@@ -2000,7 +1970,7 @@ static String16 getAttributeComment(const sp<AaptAssets>& assets,
 
 static status_t writeResourceLoadedCallbackForLayoutClasses(
     FILE* fp, const sp<AaptAssets>& assets,
-    const sp<AaptSymbols>& symbols, int indent, bool /* includePrivate */)
+    const sp<AaptSymbols>& symbols, int indent, bool includePrivate)
 {
     String16 attr16("attr");
     String16 package16(assets->getPackage());
@@ -2304,7 +2274,7 @@ static status_t writeLayoutClasses(
 
     indent--;
     fprintf(fp, "%s};\n", getIndentSpace(indent));
-    return hasErrors ? STATUST(UNKNOWN_ERROR) : NO_ERROR;
+    return hasErrors ? UNKNOWN_ERROR : NO_ERROR;
 }
 
 static status_t writeTextLayoutClasses(
@@ -2390,7 +2360,7 @@ static status_t writeTextLayoutClasses(
                     package16.string(), package16.size(), &typeSpecFlags);
                 //printf("%s:%s/%s: 0x%08x\n", String8(package16).string(),
                 //    String8(attr16).string(), String8(name16).string(), typeSpecFlags);
-                //const bool pub = (typeSpecFlags&ResTable_typeSpec::SPEC_PUBLIC) != 0;
+                const bool pub = (typeSpecFlags&ResTable_typeSpec::SPEC_PUBLIC) != 0;
 
                 fprintf(fp,
                         "int styleable %s_%s %d\n",
@@ -2400,7 +2370,7 @@ static status_t writeTextLayoutClasses(
         }
     }
 
-    return hasErrors ? STATUST(UNKNOWN_ERROR) : NO_ERROR;
+    return hasErrors ? UNKNOWN_ERROR : NO_ERROR;
 }
 
 static status_t writeSymbolClass(
@@ -2731,7 +2701,7 @@ addProguardKeepRule(ProguardKeepSet* keep, const String8& inClassName,
 
 void
 addProguardKeepMethodRule(ProguardKeepSet* keep, const String8& memberName,
-        const char* /* pkg */, const String8& srcName, int line)
+        const char* pkg, const String8& srcName, int line)
 {
     String8 rule("-keepclassmembers class * { *** ");
     rule += memberName;
@@ -3059,7 +3029,7 @@ status_t writePathsToFile(const sp<FilePathStore>& files, FILE* fp)
 }
 
 status_t
-writeDependencyPreReqs(Bundle* /* bundle */, const sp<AaptAssets>& assets, FILE* fp, bool includeRaw)
+writeDependencyPreReqs(Bundle* bundle, const sp<AaptAssets>& assets, FILE* fp, bool includeRaw)
 {
     status_t deps = -1;
     deps += writePathsToFile(assets->getFullResPaths(), fp);

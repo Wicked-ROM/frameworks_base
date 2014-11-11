@@ -39,6 +39,8 @@
     <string name="durationSeconds" msgid="8050088505238241405">"<xliff:g id="SECONDS">%1$d</xliff:g> ວິ"</string>
     <string name="durationSecond" msgid="985669622276420331">"<xliff:g id="SECONDS">%1$d</xliff:g> ວິ"</string>
     <string name="untitled" msgid="4638956954852782576">"&lt;ບໍ່ມີຊື່&gt;"</string>
+    <string name="ellipsis" msgid="7899829516048813237">"…"</string>
+    <string name="ellipsis_two_dots" msgid="1228078994866030736">"‥"</string>
     <string name="emptyPhoneNumber" msgid="7694063042079676517">"(ບໍ່ມີເບີໂທລະສັບ)"</string>
     <string name="unknownName" msgid="2277556546742746522">"(ບໍ່ຮູ້)"</string>
     <string name="defaultVoiceMailAlphaTag" msgid="2660020990097733077">"ຂໍ້ຄວາມສຽງ"</string>
@@ -1736,7 +1738,7 @@
     <string name="restr_pin_enter_old_pin" msgid="1462206225512910757">"PIN ປະ​ຈຸ​ບັນ"</string>
     <string name="restr_pin_enter_new_pin" msgid="5959606691619959184">"ລະຫັດ PIN ໃໝ່"</string>
     <string name="restr_pin_confirm_pin" msgid="8501523829633146239">"ຢືນຢັນລະຫັດ PIN ໃໝ່"</string>
-    <string name="restr_pin_create_pin" msgid="8017600000263450337">"ສ້າງ PIN ສໍາ​ລັບ​ການ​ປັບ​ປຸງ​ຂໍ້ຈໍາ​ກັດ​"</string>
+    <string name="restr_pin_create_pin" msgid="8017600000263450337">"ສ້າງ PIN ສໍາ​ລັບ​ການ​ປັບ​ປຸງ​ຂໍ້ຈໍາ​ກັດ"</string>
     <string name="restr_pin_error_doesnt_match" msgid="2224214190906994548">"PIN ບໍ່​ກົງກັນ. ລອງໃໝ່ອີກຄັ້ງ​."</string>
     <string name="restr_pin_error_too_short" msgid="8173982756265777792">"PIN ​ສັ້ນ​ເກີນ​ໄປ​. ຕ້ອງມີຢ່າງໜ້ອຍ 4 ຫຼັກ​."</string>
   <plurals name="restr_pin_countdown">

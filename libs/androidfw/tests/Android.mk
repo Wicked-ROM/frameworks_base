@@ -37,16 +37,12 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libandroidfw_tests
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
-# gtest is broken.
-LOCAL_CFLAGS += -Wno-unnamed-type-template-args
-
 LOCAL_SRC_FILES := $(testFiles)
 LOCAL_STATIC_LIBRARIES := \
     libandroidfw \
     libutils \
     libcutils \
-    liblog
+	liblog
 
 include $(BUILD_HOST_NATIVE_TEST)
 
@@ -58,10 +54,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := libandroidfw_tests
 
-LOCAL_CFLAGS += -Wall -Werror -Wunused -Wunreachable-code
-# gtest is broken.
-LOCAL_CFLAGS += -Wno-unnamed-type-template-args
-
 LOCAL_SRC_FILES := $(testFiles) \
     BackupData_test.cpp \
     ObbFile_test.cpp
@@ -71,5 +63,6 @@ LOCAL_SHARED_LIBRARIES := \
     libcutils \
     libutils \
     libui \
+    libstlport
 
 include $(BUILD_NATIVE_TEST)

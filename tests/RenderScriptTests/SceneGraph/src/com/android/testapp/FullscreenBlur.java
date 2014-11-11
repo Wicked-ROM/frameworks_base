@@ -185,8 +185,3 @@ class FullscreenBlur {
     }
 
 }
-
-
-
-
-

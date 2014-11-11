@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.style.ParagraphStyle;
+import android.util.FloatMath;
 
 /**
  * A BoringLayout is a very simple Layout implementation for text that
@@ -206,7 +207,7 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             TextLine line = TextLine.obtain();
             line.set(paint, source, 0, source.length(), Layout.DIR_LEFT_TO_RIGHT,
                     Layout.DIRS_ALL_LEFT_TO_RIGHT, false, null);
-            mMax = (int) Math.ceil(line.metrics(null));
+            mMax = (int) FloatMath.ceil(line.metrics(null));
             TextLine.recycle(line);
         }
 
@@ -300,7 +301,7 @@ public class BoringLayout extends Layout implements TextUtils.EllipsizeCallback 
             TextLine line = TextLine.obtain();
             line.set(paint, text, 0, length, Layout.DIR_LEFT_TO_RIGHT,
                     Layout.DIRS_ALL_LEFT_TO_RIGHT, false, null);
-            fm.width = (int) Math.ceil(line.metrics(fm));
+            fm.width = (int) FloatMath.ceil(line.metrics(fm));
             TextLine.recycle(line);
 
             return fm;

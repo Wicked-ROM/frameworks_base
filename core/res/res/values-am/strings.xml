@@ -39,6 +39,8 @@
     <string name="durationSeconds" msgid="8050088505238241405">"<xliff:g id="SECONDS">%1$d</xliff:g> ሴ"</string>
     <string name="durationSecond" msgid="985669622276420331">"<xliff:g id="SECONDS">%1$d</xliff:g> ሴ"</string>
     <string name="untitled" msgid="4638956954852782576">"&lt;ርዕስ አልባ&gt;"</string>
+    <string name="ellipsis" msgid="7899829516048813237">"…"</string>
+    <string name="ellipsis_two_dots" msgid="1228078994866030736">"‥"</string>
     <string name="emptyPhoneNumber" msgid="7694063042079676517">"(ምንም ስልክ ቁጥር የለም)"</string>
     <string name="unknownName" msgid="2277556546742746522">"(ያልታወቀ)"</string>
     <string name="defaultVoiceMailAlphaTag" msgid="2660020990097733077">"የድምፅ መልዕክት"</string>
@@ -1761,7 +1763,7 @@
     <string name="lock_to_app_toast_accessible" msgid="8239120109365070664">"ይህን ማያ ገጽ ለመንቀል አጠቃላይ እይታን ይንኩትና ይያዙት።"</string>
     <string name="lock_to_app_toast_locked" msgid="8739004135132606329">"ማያ ገጽ ተሰክቷል። መንቀል በድርጅትዎ አይፈቀድም።"</string>
     <string name="lock_to_app_title" msgid="1682643873107812874">"ማያ ገጽ መሰካትን ይጠቀሙ?"</string>
-    <string name="lock_to_app_description" msgid="4120623404152035221">"ማያ ገጽ መሰካትን ማሳያውን በነጠላ እይታ ውስጥ ይቆልፈዋል።\n\nለመንቀል ተመለስን እና አጠቃላይ እይታን በተመሳሳይ ይንኳቸውና ይያዟቸው።"</string>
+    <string name="lock_to_app_description" msgid="4120623404152035221">"ማያ ገጽ መሰካን ማሳያውን በአንዲ እይታ ውስጥ ይቆልፈዋል።\n\nለመንቀል ተመለስን እና አጠቃላይ እይታን በተመሳሳይ ይንኳቸውና ይያዟቸው።"</string>
     <string name="lock_to_app_description_accessible" msgid="199664191087836099">"ማያ ገጽ መሰካት ማሳያውን በአንዲት እይታ ውስጥ ይቆልፈዋል።\n\nለመንቀል አጠቃላይ እይታን ይንኩትና ይያዙት።"</string>
     <string name="lock_to_app_negative" msgid="2259143719362732728">"አይ፣ አመሰግናለሁ"</string>
     <string name="lock_to_app_positive" msgid="7085139175671313864">"ጀምር"</string>

@@ -17,14 +17,20 @@
 package com.android.server.location;
 
 import android.content.Context;
+import android.net.Proxy;
+import android.net.http.AndroidHttpClient;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import libcore.io.IoUtils;
-import libcore.io.Streams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.params.ConnRouteParams;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Random;
@@ -40,12 +46,15 @@ public class GpsXtraDownloader {
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
     private static final String DEFAULT_USER_AGENT = "Android";
 
+    private final Context mContext;
     private final String[] mXtraServers;
     // to load balance our server requests
     private int mNextServerIndex;
     private final String mUserAgent;
 
-    GpsXtraDownloader(Properties properties) {
+    GpsXtraDownloader(Context context, Properties properties) {
+        mContext = context;
+
         // read XTRA servers from the Properties object
         int count = 0;
         String server1 = properties.getProperty("XTRA_SERVER_1");
@@ -66,6 +75,7 @@ public class GpsXtraDownloader {
         if (count == 0) {
             Log.e(TAG, "No XTRA servers were specified in the GPS configuration");
             mXtraServers = null;
+            return;
         } else {
             mXtraServers = new String[count];
             count = 0;
@@ -80,6 +90,9 @@ public class GpsXtraDownloader {
     }
 
     byte[] downloadXtraData() {
+        String proxyHost = Proxy.getHost(mContext);
+        int proxyPort = Proxy.getPort(mContext);
+        boolean useProxy = (proxyHost != null && proxyPort != -1);
         byte[] result = null;
         int startIndex = mNextServerIndex;
 
@@ -89,7 +102,7 @@ public class GpsXtraDownloader {
 
         // load balance our requests among the available servers
         while (result == null) {
-            result = doDownload(mXtraServers[mNextServerIndex]);
+            result = doDownload(mXtraServers[mNextServerIndex], useProxy, proxyHost, proxyPort);
 
             // increment mNextServerIndex and wrap around if necessary
             mNextServerIndex++;
@@ -103,32 +116,65 @@ public class GpsXtraDownloader {
         return result;
     }
 
-    protected byte[] doDownload(String url) {
+    protected byte[] doDownload(String url, boolean isProxySet,
+            String proxyHost, int proxyPort) {
         if (DEBUG) Log.d(TAG, "Downloading XTRA data from " + url);
 
-        HttpURLConnection connection = null;
+        AndroidHttpClient client = null;
         try {
-            connection = (HttpURLConnection) (new URL(url)).openConnection();
-            connection.setRequestProperty(
+            if (DEBUG) Log.d(TAG, "XTRA user agent: " + mUserAgent);
+            client = AndroidHttpClient.newInstance(mUserAgent);
+            HttpUriRequest req = new HttpGet(url);
+
+            if (isProxySet) {
+                HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+                ConnRouteParams.setDefaultProxy(req.getParams(), proxy);
+            }
+
+            req.addHeader(
                     "Accept",
                     "*/*, application/vnd.wap.mms-message, application/vnd.wap.sic");
-            connection.setRequestProperty(
+
+            req.addHeader(
                     "x-wap-profile",
                     "http://www.openmobilealliance.org/tech/profiles/UAPROF/ccppschema-20021212#");
 
-            connection.connect();
-            int statusCode = connection.getResponseCode();
-            if (statusCode != HttpURLConnection.HTTP_OK) {
-                if (DEBUG) Log.d(TAG, "HTTP error downloading gps XTRA: " + statusCode);
+            HttpResponse response = client.execute(req);
+            StatusLine status = response.getStatusLine();
+            if (status.getStatusCode() != 200) { // HTTP 200 is success.
+                if (DEBUG) Log.d(TAG, "HTTP error: " + status.getReasonPhrase());
                 return null;
             }
 
-            return Streams.readFully(connection.getInputStream());
-        } catch (IOException ioe) {
-            if (DEBUG) Log.d(TAG, "Error downloading gps XTRA: ", ioe);
+            HttpEntity entity = response.getEntity();
+            byte[] body = null;
+            if (entity != null) {
+                try {
+                    if (entity.getContentLength() > 0) {
+                        body = new byte[(int) entity.getContentLength()];
+                        DataInputStream dis = new DataInputStream(entity.getContent());
+                        try {
+                            dis.readFully(body);
+                        } finally {
+                            try {
+                                dis.close();
+                            } catch (IOException e) {
+                                Log.e(TAG, "Unexpected IOException.", e);
+                            }
+                        }
+                    }
+                } finally {
+                    if (entity != null) {
+                        entity.consumeContent();
+                    }
+                }
+            }
+            return body;
+        } catch (Exception e) {
+            if (DEBUG) Log.d(TAG, "error " + e);
         } finally {
-            if (connection != null) {
-                connection.disconnect();
+            if (client != null) {
+                client.close();
             }
         }
         return null;

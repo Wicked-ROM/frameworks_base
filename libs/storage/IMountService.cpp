@@ -207,19 +207,12 @@ public:
             ALOGD("getStorageUsers caught exception %d\n", err);
             return err;
         }
-        int32_t numUsersI = reply.readInt32();
-        uint32_t numUsers;
-        if (numUsersI < 0) {
-            ALOGW("Number of users is negative: %d\n", numUsersI);
-            numUsers = 0;
-        } else {
-            numUsers = static_cast<uint32_t>(numUsersI);
-        }
+        const int32_t numUsers = reply.readInt32();
         *users = (int32_t*)malloc(sizeof(int32_t)*numUsers);
-        for (size_t i = 0; i < numUsers; i++) {
+        for (int i = 0; i < numUsers; i++) {
             **users++ = reply.readInt32();
         }
-        return static_cast<int32_t>(numUsers);
+        return numUsers;
     }
 
     int32_t getVolumeState(const String16& mountPoint)
@@ -553,8 +546,8 @@ public:
     }
 };
 
-IMPLEMENT_META_INTERFACE(MountService, "IMountService")
+IMPLEMENT_META_INTERFACE(MountService, "IMountService");
 
 // ----------------------------------------------------------------------
 
-}
+};
