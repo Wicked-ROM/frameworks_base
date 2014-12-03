@@ -1,14 +1,5 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
-
-# Too many unused parameters in external/skia/include and this directory.
-# getConfig in external/skia/include/core/SkBitmap.h is deprecated.
-# Allow Gnu extension: in-class initializer of static 'const float' member.
-LOCAL_CLANG_CFLAGS += \
-    -Wno-unused-parameter \
-    -Wno-deprecated-declarations \
-    -Wno-gnu-static-float-init
 
 # Only build libhwui when USE_OPENGL_RENDERER is
 # defined in the current device/board configuration
@@ -91,14 +82,15 @@ ifeq ($(USE_OPENGL_RENDERER),true)
 	LOCAL_MODULE := libhwui
 	LOCAL_MODULE_TAGS := optional
 
+	include external/stlport/libstlport.mk
+
 	ifneq (false,$(ANDROID_ENABLE_RENDERSCRIPT))
 		LOCAL_CFLAGS += -DANDROID_ENABLE_RENDERSCRIPT
 		LOCAL_SHARED_LIBRARIES += libRS libRScpp
 		LOCAL_C_INCLUDES += \
 			$(intermediates) \
 			frameworks/rs/cpp \
-			frameworks/rs \
-
+			frameworks/rs
 	endif
 
 	ifndef HWUI_COMPILE_SYMBOLS
@@ -112,7 +104,6 @@ ifeq ($(USE_OPENGL_RENDERER),true)
 	# Defaults for ATRACE_TAG and LOG_TAG for libhwui
 	LOCAL_CFLAGS += -DATRACE_TAG=ATRACE_TAG_VIEW -DLOG_TAG=\"OpenGLRenderer\"
 
-	include external/stlport/libstlport.mk
 	include $(BUILD_SHARED_LIBRARY)
 
 	include $(call all-makefiles-under,$(LOCAL_PATH))

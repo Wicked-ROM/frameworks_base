@@ -515,8 +515,7 @@ public class Build {
          * <p>Applications targeting this or a later release will get these
          * new changes in behavior:</p>
          * <ul>
-         * <li> The default result of
-         * {@link android.preference.PreferenceActivity#isValidFragment(String)
+         * <li> The default result of {android.preference.PreferenceActivity#isValidFragment
          * PreferenceActivity.isValueFragment} becomes false instead of true.</li>
          * <li> In {@link android.webkit.WebView}, apps targeting earlier versions will have
          * JS URLs evaluated directly and any result of the evaluation will not replace

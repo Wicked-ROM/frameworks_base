@@ -45,8 +45,6 @@ using namespace android;
 # define O_BINARY 0
 #endif
 
-static const bool kIsDebug = false;
-
 static Mutex gAssetLock;
 static int32_t gCount = 0;
 static Asset* gHead = NULL;
@@ -91,9 +89,7 @@ Asset::Asset(void)
         gTail->mNext = this;
         gTail = this;
     }
-    if (kIsDebug) {
-        ALOGI("Creating Asset %p #%d\n", this, gCount);
-    }
+    //ALOGI("Creating Asset %p #%d\n", this, gCount);
 }
 
 Asset::~Asset(void)
@@ -113,9 +109,7 @@ Asset::~Asset(void)
         mPrev->mNext = mNext;
     }
     mNext = mPrev = NULL;
-    if (kIsDebug) {
-        ALOGI("Destroying Asset in %p #%d\n", this, gCount);
-    }
+    //ALOGI("Destroying Asset in %p #%d\n", this, gCount);
 }
 
 /*

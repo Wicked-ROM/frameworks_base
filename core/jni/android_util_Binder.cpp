@@ -271,9 +271,9 @@ protected:
         //printf("\n");
         jboolean res = env->CallBooleanMethod(mObject, gBinderOffsets.mExecTransact,
             code, reinterpret_cast<jlong>(&data), reinterpret_cast<jlong>(reply), flags);
+        jthrowable excep = env->ExceptionOccurred();
 
-        if (env->ExceptionCheck()) {
-            jthrowable excep = env->ExceptionOccurred();
+        if (excep) {
             report_exception(env, excep,
                 "*** Uncaught remote exception!  "
                 "(Exceptions are not yet supported across processes.)");
@@ -291,12 +291,12 @@ protected:
             set_dalvik_blockguard_policy(env, strict_policy_before);
         }
 
-        if (env->ExceptionCheck()) {
-            jthrowable excep = env->ExceptionOccurred();
-            report_exception(env, excep,
+        jthrowable excep2 = env->ExceptionOccurred();
+        if (excep2) {
+            report_exception(env, excep2,
                 "*** Uncaught exception in onBinderStrictModePolicyChange");
             /* clean up JNI local ref -- we don't return to Java code */
-            env->DeleteLocalRef(excep);
+            env->DeleteLocalRef(excep2);
         }
 
         // Need to always call through the native implementation of
@@ -398,8 +398,8 @@ public:
 
             env->CallStaticVoidMethod(gBinderProxyOffsets.mClass,
                     gBinderProxyOffsets.mSendDeathNotice, mObject);
-            if (env->ExceptionCheck()) {
-                jthrowable excep = env->ExceptionOccurred();
+            jthrowable excep = env->ExceptionOccurred();
+            if (excep) {
                 report_exception(env, excep,
                         "*** Uncaught exception returned from death notification!");
             }
@@ -1063,9 +1063,16 @@ static void conditionally_log_binder_call(int64_t start_millis,
 }
 
 // We only measure binder call durations to potentially log them if
-// we're on the main thread.
+// we're on the main thread.  Unfortunately sim-eng doesn't seem to
+// have gettid, so we just ignore this and don't log if we can't
+// get the thread id.
 static bool should_time_binder_calls() {
-  return (getpid() == gettid());
+#ifdef HAVE_GETTID
+  return (getpid() == androidGetTid());
+#else
+#warning no gettid(), so not logging Binder calls...
+  return false;
+#endif
 }
 
 static jboolean android_os_BinderProxy_transact(JNIEnv* env, jobject obj,

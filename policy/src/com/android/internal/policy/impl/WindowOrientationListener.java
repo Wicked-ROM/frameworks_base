@@ -23,6 +23,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.SystemProperties;
+import android.util.FloatMath;
 import android.util.Log;
 import android.util.Slog;
 import android.util.TimeUtils;
@@ -445,7 +446,7 @@ public abstract class WindowOrientationListener {
                 if (LOG) {
                     Slog.v(TAG, "Raw acceleration vector: "
                             + "x=" + x + ", y=" + y + ", z=" + z
-                            + ", magnitude=" + Math.sqrt(x * x + y * y + z * z));
+                            + ", magnitude=" + FloatMath.sqrt(x * x + y * y + z * z));
                 }
 
                 // Apply a low-pass filter to the acceleration up vector in cartesian space.
@@ -472,7 +473,7 @@ public abstract class WindowOrientationListener {
                     if (LOG) {
                         Slog.v(TAG, "Filtered acceleration vector: "
                                 + "x=" + x + ", y=" + y + ", z=" + z
-                                + ", magnitude=" + Math.sqrt(x * x + y * y + z * z));
+                                + ", magnitude=" + FloatMath.sqrt(x * x + y * y + z * z));
                     }
                     skipSample = false;
                 }
@@ -486,7 +487,7 @@ public abstract class WindowOrientationListener {
                 boolean isSwinging = false;
                 if (!skipSample) {
                     // Calculate the magnitude of the acceleration vector.
-                    final float magnitude = (float) Math.sqrt(x * x + y * y + z * z);
+                    final float magnitude = FloatMath.sqrt(x * x + y * y + z * z);
                     if (magnitude < NEAR_ZERO_MAGNITUDE) {
                         if (LOG) {
                             Slog.v(TAG, "Ignoring sensor data, magnitude too close to zero.");

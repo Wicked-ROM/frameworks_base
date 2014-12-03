@@ -22,7 +22,7 @@ namespace {
         if (entry == NULL) {
             return -1;
         }
-        if (!zip->getEntryInfo(entry, NULL, NULL, NULL, NULL, NULL, reinterpret_cast<long*>(crc))) {
+        if (!zip->getEntryInfo(entry, NULL, NULL, NULL, NULL, NULL, (long*)crc)) {
             return -1;
         }
         zip->releaseEntry(entry);
@@ -66,7 +66,7 @@ fail:
                 fprintf(stderr, "error: write: %s\n", strerror(errno));
                 return -1;
             }
-            bytesLeft -= static_cast<size_t>(w);
+            bytesLeft -= w;
         }
         return 0;
     }
@@ -78,13 +78,13 @@ fail:
         if (fstat(idmap_fd, &st) == -1) {
             return true;
         }
-        if (st.st_size < static_cast<off_t>(N)) {
+        if (st.st_size < N) {
             // file is empty or corrupt
             return true;
         }
 
         char buf[N];
-        size_t bytesLeft = N;
+        ssize_t bytesLeft = N;
         if (lseek(idmap_fd, SEEK_SET, 0) < 0) {
             return true;
         }
@@ -93,7 +93,7 @@ fail:
             if (r < 0) {
                 return true;
             }
-            bytesLeft -= static_cast<size_t>(r);
+            bytesLeft -= r;
             if (bytesLeft == 0) {
                 break;
             }

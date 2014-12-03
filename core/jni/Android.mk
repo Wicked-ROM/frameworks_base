@@ -1,6 +1,5 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
-LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/Android.mk
 
 LOCAL_CFLAGS += -DHAVE_CONFIG_H -DKHTML_NO_EXCEPTIONS -DGKWQ_NO_JAVA
 LOCAL_CFLAGS += -DNO_SUPPORT_JS_BINDING -DQT_NO_WHEELEVENT -DKHTML_NO_XBL
@@ -85,6 +84,7 @@ LOCAL_SRC_FILES:= \
 	android_util_Binder.cpp \
 	android_util_EventLog.cpp \
 	android_util_Log.cpp \
+	android_util_FloatMath.cpp \
 	android_util_Process.cpp \
 	android_util_StringBlock.cpp \
 	android_util_XmlBlock.cpp \
@@ -255,10 +255,13 @@ endif
 
 LOCAL_SHARED_LIBRARIES += \
 	libdl
-
 # we need to access the private Bionic header
 # <bionic_tls.h> in com_google_android_gles_jni_GLImpl.cpp
-LOCAL_C_INCLUDES += bionic/libc/private
+LOCAL_CFLAGS += -I$(LOCAL_PATH)/../../../../bionic/libc/private
+
+ifeq ($(WITH_MALLOC_LEAK_CHECK),true)
+	LOCAL_CFLAGS += -DMALLOC_LEAK_CHECK
+endif
 
 LOCAL_MODULE:= libandroid_runtime
 

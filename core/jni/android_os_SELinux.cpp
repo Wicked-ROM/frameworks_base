@@ -97,7 +97,7 @@ static jstring getPeerCon(JNIEnv *env, jobject, jobject fileDescriptor) {
     }
 
     int fd = jniGetFDFromFileDescriptor(env, fileDescriptor);
-    if (env->ExceptionCheck()) {
+    if (env->ExceptionOccurred() != NULL) {
         ALOGE("getPeerCon => getFD for %p failed", fileDescriptor);
         return NULL;
     }

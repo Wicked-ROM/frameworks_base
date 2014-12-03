@@ -15,6 +15,7 @@
 #include <dirent.h>
 #include <errno.h>
 
+static const char* kDefaultLocale = "default";
 static const char* kAssetDir = "assets";
 static const char* kResourceDir = "res";
 static const char* kValuesDir = "values";
@@ -175,7 +176,7 @@ inline bool isNumber(const String8& string) {
 
 void AaptLocaleValue::setLanguage(const char* languageChars) {
      size_t i = 0;
-     while ((*languageChars) != '\0' && i < sizeof(language)/sizeof(language[0])) {
+     while ((*languageChars) != '\0') {
           language[i++] = tolower(*languageChars);
           languageChars++;
      }
@@ -183,7 +184,7 @@ void AaptLocaleValue::setLanguage(const char* languageChars) {
 
 void AaptLocaleValue::setRegion(const char* regionChars) {
     size_t i = 0;
-    while ((*regionChars) != '\0' && i < sizeof(region)/sizeof(region[0])) {
+    while ((*regionChars) != '\0') {
          region[i++] = toupper(*regionChars);
          regionChars++;
     }
@@ -191,7 +192,7 @@ void AaptLocaleValue::setRegion(const char* regionChars) {
 
 void AaptLocaleValue::setScript(const char* scriptChars) {
     size_t i = 0;
-    while ((*scriptChars) != '\0' && i < sizeof(script)/sizeof(script[0])) {
+    while ((*scriptChars) != '\0') {
          if (i == 0) {
              script[i++] = toupper(*scriptChars);
          } else {
@@ -203,7 +204,7 @@ void AaptLocaleValue::setScript(const char* scriptChars) {
 
 void AaptLocaleValue::setVariant(const char* variantChars) {
      size_t i = 0;
-     while ((*variantChars) != '\0' && i < sizeof(variant)/sizeof(variant[0])) {
+     while ((*variantChars) != '\0') {
           variant[i++] = *variantChars;
           variantChars++;
      }
@@ -1239,7 +1240,7 @@ bail:
 }
 
 ssize_t
-AaptAssets::slurpResourceZip(Bundle* /* bundle */, const char* filename)
+AaptAssets::slurpResourceZip(Bundle* bundle, const char* filename)
 {
     int count = 0;
     SortedVector<AaptGroupEntry> entries;

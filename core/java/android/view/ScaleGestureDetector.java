@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.FloatMath;
 
 /**
  * Detects scaling transformation gestures using the supplied {@link MotionEvent}s.
@@ -393,7 +394,7 @@ public class ScaleGestureDetector {
         if (inDoubleTapMode()) {
             span = spanY;
         } else {
-            span = (float) Math.hypot(spanX, spanY);
+            span = FloatMath.sqrt(spanX * spanX + spanY * spanY);
         }
 
         // Dispatch begin/end events as needed.

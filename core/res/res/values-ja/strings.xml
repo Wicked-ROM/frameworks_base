@@ -39,6 +39,8 @@
     <string name="durationSeconds" msgid="8050088505238241405">"<xliff:g id="SECONDS">%1$d</xliff:g>秒"</string>
     <string name="durationSecond" msgid="985669622276420331">"<xliff:g id="SECONDS">%1$d</xliff:g>秒"</string>
     <string name="untitled" msgid="4638956954852782576">"&lt;新規&gt;"</string>
+    <string name="ellipsis" msgid="7899829516048813237">"..."</string>
+    <string name="ellipsis_two_dots" msgid="1228078994866030736">"‥"</string>
     <string name="emptyPhoneNumber" msgid="7694063042079676517">"（電話番号なし）"</string>
     <string name="unknownName" msgid="2277556546742746522">"（名前）"</string>
     <string name="defaultVoiceMailAlphaTag" msgid="2660020990097733077">"ボイスメール"</string>
@@ -1757,18 +1759,18 @@
     <string name="item_is_selected" msgid="949687401682476608">"<xliff:g id="ITEM">%1$s</xliff:g>を選択しました"</string>
     <string name="deleted_key" msgid="7659477886625566590">"<xliff:g id="KEY">%1$s</xliff:g>を削除しました"</string>
     <string name="managed_profile_label_badge" msgid="2355652472854327647">"仕事の<xliff:g id="LABEL">%1$s</xliff:g>"</string>
-    <string name="lock_to_app_toast" msgid="7570091317001980053">"この画面の固定を解除するには[戻る]と[最近]を同時に押し続けます。"</string>
-    <string name="lock_to_app_toast_accessible" msgid="8239120109365070664">"この画面の固定を解除するには[最近]を押し続けます。"</string>
+    <string name="lock_to_app_toast" msgid="7570091317001980053">"この画面の固定を解除するには[戻る]と[概要]を同時に押し続けます。"</string>
+    <string name="lock_to_app_toast_accessible" msgid="8239120109365070664">"この画面の固定を解除するには[概要]を押し続けます。"</string>
     <string name="lock_to_app_toast_locked" msgid="8739004135132606329">"画面が固定されています。会社/組織により解除は許可されていません。"</string>
     <string name="lock_to_app_title" msgid="1682643873107812874">"画面固定を使用しますか？"</string>
-    <string name="lock_to_app_description" msgid="4120623404152035221">"画面の固定では、1つの画面が表示されたままになります。\n\n解除するには、[戻る]と[最近]を同時に押し続けます。"</string>
-    <string name="lock_to_app_description_accessible" msgid="199664191087836099">"画面の固定では、1つの画面が表示されたままになります。\n\n解除するには、[最近]を押し続けます。"</string>
+    <string name="lock_to_app_description" msgid="4120623404152035221">"画面の固定では、1つの画面が表示されたままになります。\n\n解除するには、[戻る]と[概要]を同時に押し続けます。"</string>
+    <string name="lock_to_app_description_accessible" msgid="199664191087836099">"画面の固定では、1つの画面が表示されたままになります。\n\n解除するには、[概要]を押し続けます。"</string>
     <string name="lock_to_app_negative" msgid="2259143719362732728">"いいえ"</string>
     <string name="lock_to_app_positive" msgid="7085139175671313864">"開始する"</string>
     <string name="lock_to_app_start" msgid="6643342070839862795">"画面を固定しました"</string>
     <string name="lock_to_app_exit" msgid="8598219838213787430">"画面固定を解除しました"</string>
     <string name="lock_to_app_unlock_pin" msgid="2552556656504331634">"オフライン再生を解除する前にPINの入力を求める"</string>
-    <string name="lock_to_app_unlock_pattern" msgid="4182192144797225137">"画面固定を解除する前にロック解除パターンの入力を求める"</string>
+    <string name="lock_to_app_unlock_pattern" msgid="4182192144797225137">"オフライン再生を解除する前にロック解除パターンの入力を求める"</string>
     <string name="lock_to_app_unlock_password" msgid="6380979775916974414">"オフライン再生を解除する前にパスワードの入力を求める"</string>
     <string name="battery_saver_description" msgid="2510530476513605742">"バッテリーを長持ちさせるため、バッテリーセーバーは端末のパフォーマンス、バイブレーション、ほとんどのバックグラウンドデータを制限します。同期を使用するメールやメッセージなどのアプリは起動しないと更新されない場合があります。\n\nバッテリーセーバーは、端末の充電中は自動的にOFFになります。"</string>
     <string name="downtime_condition_summary" msgid="8761776337475705749">"<xliff:g id="FORMATTEDTIME">%1$s</xliff:g>にダウンロードが終わるまで"</string>

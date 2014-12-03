@@ -6327,8 +6327,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
         /**
          * Information about how wide the view wants to be. Can be one of the
-         * constants FILL_PARENT (replaced by MATCH_PARENT
-         * in API Level 8) or WRAP_CONTENT, or an exact size.
+         * constants FILL_PARENT (replaced by MATCH_PARENT ,
+         * in API Level 8) or WRAP_CONTENT. or an exact size.
          */
         @ViewDebug.ExportedProperty(category = "layout", mapping = {
             @ViewDebug.IntToString(from = MATCH_PARENT, to = "MATCH_PARENT"),
@@ -6338,8 +6338,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
 
         /**
          * Information about how tall the view wants to be. Can be one of the
-         * constants FILL_PARENT (replaced by MATCH_PARENT
-         * in API Level 8) or WRAP_CONTENT, or an exact size.
+         * constants FILL_PARENT (replaced by MATCH_PARENT ,
+         * in API Level 8) or WRAP_CONTENT. or an exact size.
          */
         @ViewDebug.ExportedProperty(category = "layout", mapping = {
             @ViewDebug.IntToString(from = MATCH_PARENT, to = "MATCH_PARENT"),

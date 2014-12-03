@@ -54,8 +54,8 @@ MessageQueue::~MessageQueue() {
 }
 
 bool MessageQueue::raiseAndClearException(JNIEnv* env, const char* msg) {
-    if (env->ExceptionCheck()) {
-        jthrowable exceptionObj = env->ExceptionOccurred();
+    jthrowable exceptionObj = env->ExceptionOccurred();
+    if (exceptionObj) {
         env->ExceptionClear();
         raiseException(env, msg, exceptionObj);
         env->DeleteLocalRef(exceptionObj);

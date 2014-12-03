@@ -640,7 +640,7 @@ public class GestureOverlayView extends FrameLayout {
             mStrokeBuffer.add(new GesturePoint(x, y, event.getEventTime()));
 
             if (mHandleGestureActions && !mIsGesturing) {
-                mTotalLength += (float) Math.hypot(dx, dy);
+                mTotalLength += (float) Math.sqrt(dx * dx + dy * dy);
 
                 if (mTotalLength > mGestureStrokeLengthThreshold) {
                     final OrientedBoundingBox box =

@@ -1050,8 +1050,10 @@ public class StackView extends AdapterViewAnimator {
             if (mView != null) {
                 final LayoutParams viewLp = (LayoutParams) mView.getLayoutParams();
 
-                float d = (float) Math.hypot(viewLp.horizontalOffset, viewLp.verticalOffset);
-                float maxd = (float) Math.hypot(mSlideAmount, 0.4f * mSlideAmount);
+                float d = (float) Math.sqrt(Math.pow(viewLp.horizontalOffset, 2) +
+                        Math.pow(viewLp.verticalOffset, 2));
+                float maxd = (float) Math.sqrt(Math.pow(mSlideAmount, 2) +
+                        Math.pow(0.4f * mSlideAmount, 2));
 
                 if (velocity == 0) {
                     return (invert ? (1 - d / maxd) : d / maxd) * DEFAULT_ANIMATION_DURATION;
